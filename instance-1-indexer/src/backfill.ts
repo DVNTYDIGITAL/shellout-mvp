@@ -69,7 +69,7 @@ export async function backfillTransactions(
       }
 
       // Rate limiting
-      await sleep(100);
+      await sleep(300);
     }
 
     if (batch.length > 0) {

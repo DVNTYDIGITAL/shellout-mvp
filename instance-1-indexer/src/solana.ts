@@ -22,6 +22,32 @@ const MAX_BUFFER_SIZE = 1000;
 // Set of signatures currently being processed to avoid duplicates
 const processingSignatures = new Set<string>();
 
+// Rate limiting: simple semaphore + delay
+let activeRpcCalls = 0;
+const rpcQueue: Array<() => void> = [];
+
+function sleep(ms: number): Promise<void> {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+async function withRateLimit<T>(fn: () => Promise<T>): Promise<T> {
+  // Wait for a slot to open up
+  while (activeRpcCalls >= config.maxConcurrentRpc) {
+    await new Promise<void>((resolve) => rpcQueue.push(resolve));
+  }
+  activeRpcCalls++;
+  try {
+    await sleep(config.rpcDelayMs);
+    return await fn();
+  } finally {
+    activeRpcCalls--;
+    if (rpcQueue.length > 0) {
+      const next = rpcQueue.shift()!;
+      next();
+    }
+  }
+}
+
 export function getConnection(): Connection {
   if (!connection) {
     connection = new Connection(config.solanaRpcUrl, {
@@ -69,10 +95,12 @@ async function processSignature(signature: string): Promise<void> {
 
   try {
     const conn = getConnection();
-    const tx = await conn.getParsedTransaction(signature, {
-      maxSupportedTransactionVersion: 0,
-      commitment: 'confirmed',
-    });
+    const tx = await withRateLimit(() =>
+      conn.getParsedTransaction(signature, {
+        maxSupportedTransactionVersion: 0,
+        commitment: 'confirmed',
+      })
+    );
 
     if (!tx) return;
 
