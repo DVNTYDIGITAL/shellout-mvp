@@ -40,9 +40,9 @@ export default function StatsDisplay() {
   if (!stats) return <Skeleton />;
 
   const items = [
-    { value: formatNumber(stats.total_transactions), label: "Transactions Indexed" },
-    { value: formatNumber(stats.total_wallets), label: "Wallets Tracked" },
-    { value: formatVolume(stats.total_volume), label: "Volume Tracked" },
+    { value: formatNumber(stats.total_transactions_indexed), label: "Transactions Indexed" },
+    { value: formatNumber(stats.total_wallets_seen), label: "Wallets Tracked" },
+    { value: formatVolume(stats.total_volume_usd), label: "Volume Tracked" },
   ];
 
   return (

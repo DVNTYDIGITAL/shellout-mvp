@@ -19,9 +19,9 @@ export interface ReputationData {
 }
 
 export interface StatsData {
-  total_transactions: number;
-  total_wallets: number;
-  total_volume: number;
+  total_transactions_indexed: number;
+  total_wallets_seen: number;
+  total_volume_usd: number;
 }
 
 export async function getReputation(address: string): Promise<ReputationData> {
