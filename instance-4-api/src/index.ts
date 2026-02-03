@@ -2,9 +2,13 @@ import express from 'express';
 import cors from 'cors';
 import rateLimit from 'express-rate-limit';
 import { Pool } from 'pg';
-import { calculateReputation } from '../../instance-3-calculator/src/calculator';
+import { calculateReputation } from './calculator';
+import path from 'path';
 
 const app = express();
+
+// Trust proxy - required for Railway/behind reverse proxy
+app.set('trust proxy', 1);
 
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
@@ -36,6 +40,16 @@ const limiter = rateLimit({
   },
 });
 app.use(limiter);
+
+// Serve widget.min.js at /widget.js
+app.get('/widget.js', (_req, res) => {
+  res.set({
+    'Content-Type': 'application/javascript',
+    'Cache-Control': 'public, max-age=3600',
+    'Access-Control-Allow-Origin': '*',
+  });
+  res.sendFile(path.join(__dirname, '..', 'public', 'widget.min.js'));
+});
 
 // Solana address validation
 function isValidSolanaAddress(address: string): boolean {
