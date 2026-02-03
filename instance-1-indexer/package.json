@@ -1,0 +1,23 @@
+{
+  "name": "shellout-indexer",
+  "version": "1.0.0",
+  "description": "Solana USDC transaction indexer for shellout.ai",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "dev": "ts-node src/index.ts",
+    "test:connectivity": "ts-node src/test-connectivity.ts"
+  },
+  "dependencies": {
+    "@solana/web3.js": "^1.95.0",
+    "pg": "^8.13.0",
+    "dotenv": "^16.4.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "@types/pg": "^8.11.0",
+    "typescript": "^5.6.0",
+    "ts-node": "^10.9.0"
+  }
+}

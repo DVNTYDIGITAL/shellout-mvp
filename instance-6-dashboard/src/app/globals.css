@@ -1,0 +1,26 @@
+@import "tailwindcss";
+
+@theme {
+  --color-primary: #3B82F6;
+  --color-primary-dark: #2563EB;
+  --color-surface: #F9FAFB;
+  --color-text-primary: #111827;
+  --color-text-secondary: #6B7280;
+  --color-score-good: #059669;
+  --color-score-medium: #D97706;
+  --color-score-bad: #DC2626;
+}
+
+body {
+  font-family: "Inter", system-ui, -apple-system, sans-serif;
+  color: var(--color-text-primary);
+}
+
+@keyframes skeleton {
+  0%, 100% { opacity: 0.5; }
+  50% { opacity: 1; }
+}
+
+.animate-skeleton {
+  animation: skeleton 1.5s ease-in-out infinite;
+}
